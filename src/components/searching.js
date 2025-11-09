@@ -7,12 +7,10 @@ export function initSearching(searchField) {
         rules.skipEmptyTargetValues, // стандартное правило для пропуска пустых значений
         rules.searchMultipleFields(searchField, ['date', 'customer', 'seller'], false) // поиск по нескольким полям
     );
-    return (data, state, action) => {
-        // @todo: #5.2 — применить компаратор
-                if (action && action.type === 'search' && action.payload !== undefined) {
-            const searchTerm = action.payload.toLowerCase();
-            return data.filter(item => comparator(item, searchTerm));
-        }
-        return data;
-    }
+    return (query, state, action) => { // result заменили на query
+    return state[searchField] ? Object.assign({}, query, { // проверяем, что в поле поиска было что-то введено
+        search: state[searchField] // устанавливаем в query параметр
+    }) : query; // если поле с поиском пустое, просто возвращаем query без изменений
+}
+
 }
